@@ -71,9 +71,18 @@ export async function procoreApiCall(
     defaultCompanyId
   );
 
-  // Build full URL.
+  // Build full URL. The path comes from the tool caller, so it must not be
+  // able to change the host: "@attacker.example/x" appended to the base URL
+  // would otherwise send the bearer token to attacker.example.
+  if (!path.startsWith("/")) {
+    throw new Error(`Procore API path must start with "/". Got: "${path}"`);
+  }
   const qs = buildQueryString(queryParams, page, perPage);
-  const url = `${getApiBaseUrl()}${path}${qs}`;
+  const apiBase = getApiBaseUrl();
+  const url = `${apiBase}${path}${qs}`;
+  if (new URL(url).origin !== new URL(apiBase).origin) {
+    throw new Error(`Refusing to send a request outside ${apiBase}`);
+  }
 
   // Get auth token.
   const token = await getValidAccessToken(
