@@ -16,7 +16,7 @@ export interface TokenData {
 const DEFAULT_TOKEN_DIR = join(homedir(), ".procore-mcp");
 const DEFAULT_TOKEN_FILE = "tokens.json";
 
-function getTokenPath(): string {
+export function getTokenPath(): string {
   const custom = process.env.PROCORE_TOKEN_PATH;
   if (custom) return custom;
   return join(DEFAULT_TOKEN_DIR, DEFAULT_TOKEN_FILE);

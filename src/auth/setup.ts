@@ -12,6 +12,7 @@ import {
 } from "./oauth-state.js";
 import { isLoopbackAddress } from "./loopback.js";
 import { findProjectRoot } from "../project-root.js";
+import { getTokenPath } from "./token-store.js";
 
 // Load .env manually (no dotenv dependency)
 function loadEnv(): void {
@@ -131,7 +132,7 @@ async function main(): Promise<void> {
           res.writeHead(200, { "Content-Type": "text/html" });
           res.end(SUCCESS_HTML);
 
-          console.log("Tokens saved to ~/.procore-mcp/tokens.json");
+          console.log(`Tokens saved to ${getTokenPath()}`);
           console.log("\nYou can now start the MCP server with: npm start");
           shutdown(0);
         } catch (err) {
